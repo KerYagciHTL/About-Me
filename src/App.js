@@ -44,20 +44,6 @@ const Portfolio = () => {
       github: "https://github.com/KerYagciHTL/KCY-Accounting",
       icon: "💰"
     },
-    {
-      title: "Performance Optimizer",
-      description: "Ein Tool zur Analyse und Optimierung von Anwendungsperformance mit Echtzeit-Monitoring und detaillierter Berichterstattung.",
-      tech: ["C++", "Python", "SQL"],
-      github: "#",
-      icon: "⚡"
-    },
-    {
-      title: "Data Structure Library",
-      description: "Eine hochoptimierte C++ Library mit verschiedenen Datenstrukturen und Algorithmen für bessere Performance in kritischen Anwendungen.",
-      tech: ["C++", "CMake", "GTest"],
-      github: "#",
-      icon: "🔧"
-    }
   ];
 
   const skills = [
