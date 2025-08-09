@@ -4,7 +4,43 @@ import { Github, Mail, ExternalLink, Code, Database, Settings, Zap, ChevronDown,
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
-  const [isTranslateLoaded, setIsTranslateLoaded] = useState(false);
+  const [language, setLanguage] = useState('de'); // 'de' or 'en'
+
+  // Auto-detect language based on browser/region
+  useEffect(() => {
+    const detectLanguage = () => {
+      const browserLang = navigator.language || navigator.userLanguage;
+      const langCode = browserLang.split('-')[0];
+      
+      // Check if browser language is English or from English-speaking countries
+      const englishRegions = ['en', 'us', 'gb', 'ca', 'au', 'nz', 'ie', 'za'];
+      const isEnglishRegion = englishRegions.some(code => 
+        browserLang.toLowerCase().includes(code)
+      );
+      
+      // Set language based on detection
+      if (isEnglishRegion || langCode === 'en') {
+        setLanguage('en');
+      } else {
+        setLanguage('de');
+      }
+    };
+
+    // Check if language was previously set in localStorage
+    const savedLanguage = localStorage.getItem('portfolio-language');
+    if (savedLanguage) {
+      setLanguage(savedLanguage);
+    } else {
+      detectLanguage();
+    }
+  }, []);
+
+  // Save language preference
+  const toggleLanguage = () => {
+    const newLanguage = language === 'de' ? 'en' : 'de';
+    setLanguage(newLanguage);
+    localStorage.setItem('portfolio-language', newLanguage);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,37 +65,6 @@ const Portfolio = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Load Google Translate
-  useEffect(() => {
-    // Add Google Translate script
-    const script = document.createElement('script');
-    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-    script.async = true;
-    document.body.appendChild(script);
-
-    // Initialize Google Translate
-    window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: 'de',
-          includedLanguages: 'en,es,fr,it,pt,ru,zh,ja,ko,ar,hi,tr',
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false
-        },
-        'google_translate_element'
-      );
-      setIsTranslateLoaded(true);
-    };
-
-    return () => {
-      // Cleanup
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-      delete window.googleTranslateElementInit;
-    };
-  }, []);
-
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -68,18 +73,110 @@ const Portfolio = () => {
     }
   };
 
-  const toggleTranslator = () => {
-    const translateElement = document.getElementById('google_translate_element');
-    if (translateElement) {
-      translateElement.style.display = 
-        translateElement.style.display === 'none' ? 'block' : 'none';
+  // Translation object
+  const translations = {
+    de: {
+      nav: {
+        about: 'Über mich',
+        projects: 'Projekte',
+        skills: 'Skills',
+        contact: 'Kontakt'
+      },
+      hero: {
+        title: 'Junior Software Developer & Software Engineer',
+        github: 'GitHub',
+        email: 'Email'
+      },
+      about: {
+        title: 'Über mich',
+        text1: 'Hi! Ich bin Kerim, ein engagierter Softwareentwickler mit Fokus auf C# und modernen Technologien. Als Schüler der HTL Leonding entwickle ich effiziente, performante und wartbare Anwendungen.',
+        text2: 'Meine Stärken liegen in der Umsetzung benutzerfreundlicher Desktop-Anwendungen und zuverlässiger Backend-Logik. Ich liebe es, komplexe Herausforderungen zu lösen und dabei sauberen, gut strukturierten Code zu schreiben.',
+        traits: ['Clean Code', 'Performance', 'Innovation', 'Teamwork']
+      },
+      projects: {
+        title: 'Meine Projekte',
+        kcy: {
+          description: 'Eine umfassende Buchhaltungsanwendung mit moderner Benutzeroberfläche. Bietet Funktionen für Rechnungsverwaltung, Finanzberichterstattung und Kundenmanagement mit intuitiver Bedienung.'
+        },
+        code: 'Code',
+        demo: 'Demo'
+      },
+      skills: {
+        title: 'Skills & Technologien',
+        programming: 'Programmiersprachen',
+        frameworks: 'Frameworks & Tools',
+        development: 'Softwareentwicklung',
+        databases: 'Datenbanken',
+        items: {
+          development: ['OOP', 'Algorithmen & Datenstrukturen', 'Performance-Optimierung', 'Clean Code']
+        }
+      },
+      contact: {
+        title: 'Kontakt',
+        subtitle: 'Interessiert an einer Zusammenarbeit? Lass uns reden!',
+        email: 'Email',
+        github: 'GitHub'
+      },
+      footer: {
+        rights: 'Alle Rechte vorbehalten.',
+        tech: 'Entwickelt mit React & Tailwind CSS'
+      }
+    },
+    en: {
+      nav: {
+        about: 'About',
+        projects: 'Projects',
+        skills: 'Skills',
+        contact: 'Contact'
+      },
+      hero: {
+        title: 'Junior Software Developer & Software Engineer',
+        github: 'GitHub',
+        email: 'Email'
+      },
+      about: {
+        title: 'About Me',
+        text1: 'Hi! I\'m Kerim, a passionate software developer focusing on C# and modern technologies. As a student at HTL Leonding, I develop efficient, performant, and maintainable applications.',
+        text2: 'My strengths lie in implementing user-friendly desktop applications and reliable backend logic. I love solving complex challenges while writing clean, well-structured code.',
+        traits: ['Clean Code', 'Performance', 'Innovation', 'Teamwork']
+      },
+      projects: {
+        title: 'My Projects',
+        kcy: {
+          description: 'A comprehensive accounting application with modern user interface. Offers features for invoice management, financial reporting, and customer management with intuitive operation.'
+        },
+        code: 'Code',
+        demo: 'Demo'
+      },
+      skills: {
+        title: 'Skills & Technologies',
+        programming: 'Programming Languages',
+        frameworks: 'Frameworks & Tools',
+        development: 'Software Development',
+        databases: 'Databases',
+        items: {
+          development: ['OOP', 'Algorithms & Data Structures', 'Performance Optimization', 'Clean Code']
+        }
+      },
+      contact: {
+        title: 'Contact',
+        subtitle: 'Interested in collaboration? Let\'s talk!',
+        email: 'Email',
+        github: 'GitHub'
+      },
+      footer: {
+        rights: 'All rights reserved.',
+        tech: 'Built with React & Tailwind CSS'
+      }
     }
   };
+
+  const t = translations[language];
 
   const projects = [
     {
       title: "KCY Accounting",
-      description: "Eine umfassende Buchhaltungsanwendung mit moderner Benutzeroberfläche. Bietet Funktionen für Rechnungsverwaltung, Finanzberichterstattung und Kundenmanagement mit intuitiver Bedienung.",
+      description: t.projects.kcy.description,
       tech: ["C#", "C++", ".NET"],
       github: "https://github.com/KerYagciHTL/KCY-Accounting",
       icon: "💰"
@@ -89,42 +186,45 @@ const Portfolio = () => {
   const skills = [
     {
       icon: <Code className="w-8 h-8" />,
-      title: "Programmiersprachen",
+      title: t.skills.programming,
       items: ["C#", "C++", "C", "Python", "JavaScript"]
     },
     {
       icon: <Settings className="w-8 h-8" />,
-      title: "Frameworks & Tools",
+      title: t.skills.frameworks,
       items: [".NET 6/7/8", "Visual Studio", "Git", "Docker", "CMake"]
     },
     {
       icon: <Zap className="w-8 h-8" />,
-      title: "Softwareentwicklung",
-      items: ["OOP", "Algorithmen & Datenstrukturen", "Performance-Optimierung", "Clean Code"]
+      title: t.skills.development,
+      items: t.skills.items.development
     },
     {
       icon: <Database className="w-8 h-8" />,
-      title: "Datenbanken",
-      items: ["SQL", "SQLite", "PostgreSQL", "MongoDB"]
+      title: t.skills.databases,
+      items: ["SQL", "SQLite"]
     }
   ];
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      {/* Translation Widget */}
+      {/* Language Toggle */}
       <div className="fixed top-20 right-4 z-40">
-        <button
-          onClick={toggleTranslator}
-          className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105 mb-2"
-          title="Translate Page"
-        >
-          <Languages className="w-5 h-5" />
-        </button>
-        <div
-          id="google_translate_element"
-          className="bg-white rounded-lg shadow-lg p-2"
-          style={{ display: 'none' }}
-        ></div>
+        <div className="bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700 overflow-hidden">
+          <button
+            onClick={toggleLanguage}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white p-3 transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 min-w-[120px]"
+            title={language === 'de' ? 'Switch to English' : 'Zu Deutsch wechseln'}
+          >
+            <Languages className="w-5 h-5" />
+            <span className="text-sm font-medium">
+              {language === 'de' ? 'EN' : 'DE'}
+            </span>
+            <div className="flex items-center gap-1 ml-2">
+              <span className="text-xs opacity-75">{language === 'de' ? '🇺🇸' : '🇩🇪'}</span>
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -145,21 +245,20 @@ const Portfolio = () => {
                     activeSection === section ? 'text-blue-400' : 'text-gray-300'
                   }`}
                 >
-                  {section === 'about' ? 'Über mich' : 
-                   section === 'projects' ? 'Projekte' :
-                   section === 'skills' ? 'Skills' : 'Kontakt'}
+                  {t.nav[section]}
                 </button>
               ))}
             </div>
 
-            {/* Desktop Translate Button */}
+            {/* Desktop Language Toggle */}
             <div className="hidden md:flex items-center space-x-4">
               <button
-                onClick={toggleTranslator}
-                className="text-gray-300 hover:text-blue-400 transition-colors duration-200"
-                title="Translate Page"
+                onClick={toggleLanguage}
+                className="text-gray-300 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 px-3 py-1 rounded-md hover:bg-gray-800"
+                title={language === 'de' ? 'Switch to English' : 'Zu Deutsch wechseln'}
               >
-                <Languages className="w-5 h-5" />
+                <Languages className="w-4 h-4" />
+                <span className="text-sm font-medium">{language === 'de' ? 'EN' : 'DE'}</span>
               </button>
             </div>
 
@@ -185,17 +284,15 @@ const Portfolio = () => {
                   onClick={() => scrollToSection(section)}
                   className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md capitalize"
                 >
-                  {section === 'about' ? 'Über mich' : 
-                   section === 'projects' ? 'Projekte' :
-                   section === 'skills' ? 'Skills' : 'Kontakt'}
+                  {t.nav[section]}
                 </button>
               ))}
               <button
-                onClick={toggleTranslator}
+                onClick={toggleLanguage}
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md"
               >
                 <Languages className="w-5 h-5 inline mr-2" />
-                Übersetzen
+                {language === 'de' ? 'English' : 'Deutsch'}
               </button>
             </div>
           </div>
@@ -212,7 +309,7 @@ const Portfolio = () => {
               Kerimcan Yagci
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8">
-              Junior Software Developer & Software Engineer
+              {t.hero.title}
             </p>
             <div className="flex justify-center space-x-6">
               <a
@@ -222,14 +319,14 @@ const Portfolio = () => {
                 className="inline-flex items-center px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-200 hover:scale-105"
               >
                 <Github className="w-5 h-5 mr-2" />
-                GitHub
+                {t.hero.github}
               </a>
               <a
                 href="mailto:kerimcanyagci41@gmail.com"
                 className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg transition-all duration-200 hover:scale-105"
               >
                 <Mail className="w-5 h-5 mr-2" />
-                Email
+                {t.hero.email}
               </a>
             </div>
           </div>
@@ -243,21 +340,14 @@ const Portfolio = () => {
       <section id="about" className="py-20 px-4 bg-gray-800/50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Über mich
+            {t.about.title}
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 text-lg text-gray-300 leading-relaxed">
-              <p>
-                Hi! Ich bin Kerim, ein engagierter Softwareentwickler mit Fokus auf C# und modernen Technologien.
-                Als Schüler der HTL Leonding entwickle ich effiziente, performante und wartbare Anwendungen.
-              </p>
-              <p>
-                Meine Stärken liegen in der Umsetzung benutzerfreundlicher Desktop-Anwendungen und zuverlässiger
-                Backend-Logik. Ich liebe es, komplexe Herausforderungen zu lösen und dabei sauberen, gut
-                strukturierten Code zu schreiben.
-              </p>
+              <p>{t.about.text1}</p>
+              <p>{t.about.text2}</p>
               <div className="flex flex-wrap gap-3 pt-4">
-                {['Clean Code', 'Performance', 'Innovation', 'Teamwork'].map((trait) => (
+                {t.about.traits.map((trait) => (
                   <span
                     key={trait}
                     className="px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-blue-300"
@@ -282,7 +372,7 @@ const Portfolio = () => {
       <section id="projects" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Meine Projekte
+            {t.projects.title}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
@@ -311,11 +401,11 @@ const Portfolio = () => {
                     className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg transition-all duration-200 text-sm font-medium"
                   >
                     <Github className="w-4 h-4 mr-2" />
-                    Code
+                    {t.projects.code}
                   </a>
                   <button className="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-200 text-sm font-medium">
                     <ExternalLink className="w-4 h-4 mr-2" />
-                    Demo
+                    {t.projects.demo}
                   </button>
                 </div>
               </div>
@@ -328,7 +418,7 @@ const Portfolio = () => {
       <section id="skills" className="py-20 px-4 bg-gray-800/50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Skills & Technologien
+            {t.skills.title}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {skills.map((skill, index) => (
@@ -360,10 +450,10 @@ const Portfolio = () => {
       <section id="contact" className="py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Kontakt
+            {t.contact.title}
           </h2>
           <p className="text-xl text-gray-300 mb-12">
-            Interessiert an einer Zusammenarbeit? Lass uns reden!
+            {t.contact.subtitle}
           </p>
           <div className="flex justify-center space-x-8">
             <a
@@ -371,7 +461,7 @@ const Portfolio = () => {
               className="flex flex-col items-center p-6 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl hover:border-blue-500/50 transition-all duration-300 hover:scale-105 group"
             >
               <Mail className="w-12 h-12 mb-4 text-blue-400 group-hover:text-blue-300" />
-              <span className="text-lg font-medium">Email</span>
+              <span className="text-lg font-medium">{t.contact.email}</span>
               <span className="text-gray-400">kerimcanyagci41@gmail.com</span>
             </a>
             <a
@@ -381,7 +471,7 @@ const Portfolio = () => {
               className="flex flex-col items-center p-6 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl hover:border-purple-500/50 transition-all duration-300 hover:scale-105 group"
             >
               <Github className="w-12 h-12 mb-4 text-purple-400 group-hover:text-purple-300" />
-              <span className="text-lg font-medium">GitHub</span>
+              <span className="text-lg font-medium">{t.contact.github}</span>
               <span className="text-gray-400">@KerYagciHTL</span>
             </a>
           </div>
@@ -391,46 +481,10 @@ const Portfolio = () => {
       {/* Footer */}
       <footer className="py-8 px-4 border-t border-gray-800">
         <div className="max-w-7xl mx-auto text-center text-gray-400">
-          <p>&copy; 2025 Kerimcan Yagci. Alle Rechte vorbehalten.</p>
-          <p className="mt-2 text-sm">Entwickelt mit React & Tailwind CSS</p>
+          <p>&copy; 2025 Kerimcan Yagci. {t.footer.rights}</p>
+          <p className="mt-2 text-sm">{t.footer.tech}</p>
         </div>
       </footer>
-
-      {/* Google Translate CSS Override */}
-      <style jsx>{`
-        .goog-te-banner-frame,
-        .goog-te-menu-frame {
-          display: none !important;
-        }
-        
-        .goog-te-menu-value {
-          padding: 8px !important;
-          border-radius: 8px !important;
-          background-color: #374151 !important;
-          color: white !important;
-        }
-        
-        .goog-te-menu-value:hover {
-          background-color: #4B5563 !important;
-        }
-        
-        body {
-          top: 0px !important;
-        }
-        
-        #google_translate_element .goog-te-combo {
-          background-color: #374151;
-          border: 1px solid #6B7280;
-          color: white;
-          padding: 8px;
-          border-radius: 6px;
-          font-size: 14px;
-        }
-        
-        #google_translate_element .goog-te-combo:hover {
-          background-color: #4B5563;
-        }
-      `}</style>
     </div>
   );
 };
