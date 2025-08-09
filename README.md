@@ -1,12 +1,12 @@
 # Kerimcan Yagci - Portfolio Website
 
-Eine moderne, responsive Portfolio-Website entwickelt mit React und Tailwind CSS.
+A modern, responsive portfolio website built with React and Tailwind CSS.
 
 ## Features
-- 🌙 Dark Theme Design
-- 📱 Vollständig responsive
-- ⚡ Smooth Animations
-- 🎨 Moderne Glassmorphism-Effekte
+- 🌙 Dark theme design  
+- 📱 Fully responsive  
+- ⚡ Smooth animations  
+- 🎨 Modern glassmorphism effects  
 
 ## Deployment
 ```bash
