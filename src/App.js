@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Mail, ExternalLink, Code, Database, Settings, Zap, ChevronDown, Menu, X } from 'lucide-react';
+import { Github, Mail, ExternalLink, Code, Database, Settings, Zap, ChevronDown, Menu, X, Languages } from 'lucide-react';
 
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
+  const [isTranslateLoaded, setIsTranslateLoaded] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,11 +29,50 @@ const Portfolio = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Load Google Translate
+  useEffect(() => {
+    // Add Google Translate script
+    const script = document.createElement('script');
+    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Initialize Google Translate
+    window.googleTranslateElementInit = () => {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: 'de',
+          includedLanguages: 'en,es,fr,it,pt,ru,zh,ja,ko,ar,hi,tr',
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        },
+        'google_translate_element'
+      );
+      setIsTranslateLoaded(true);
+    };
+
+    return () => {
+      // Cleanup
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      delete window.googleTranslateElementInit;
+    };
+  }, []);
+
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       setIsMenuOpen(false);
+    }
+  };
+
+  const toggleTranslator = () => {
+    const translateElement = document.getElementById('google_translate_element');
+    if (translateElement) {
+      translateElement.style.display = 
+        translateElement.style.display === 'none' ? 'block' : 'none';
     }
   };
 
@@ -71,6 +111,22 @@ const Portfolio = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
+      {/* Translation Widget */}
+      <div className="fixed top-20 right-4 z-40">
+        <button
+          onClick={toggleTranslator}
+          className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105 mb-2"
+          title="Translate Page"
+        >
+          <Languages className="w-5 h-5" />
+        </button>
+        <div
+          id="google_translate_element"
+          className="bg-white rounded-lg shadow-lg p-2"
+          style={{ display: 'none' }}
+        ></div>
+      </div>
+
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-gray-900/95 backdrop-blur-md border-b border-gray-800 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -94,6 +150,17 @@ const Portfolio = () => {
                    section === 'skills' ? 'Skills' : 'Kontakt'}
                 </button>
               ))}
+            </div>
+
+            {/* Desktop Translate Button */}
+            <div className="hidden md:flex items-center space-x-4">
+              <button
+                onClick={toggleTranslator}
+                className="text-gray-300 hover:text-blue-400 transition-colors duration-200"
+                title="Translate Page"
+              >
+                <Languages className="w-5 h-5" />
+              </button>
             </div>
 
             {/* Mobile menu button */}
@@ -123,6 +190,13 @@ const Portfolio = () => {
                    section === 'skills' ? 'Skills' : 'Kontakt'}
                 </button>
               ))}
+              <button
+                onClick={toggleTranslator}
+                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md"
+              >
+                <Languages className="w-5 h-5 inline mr-2" />
+                Übersetzen
+              </button>
             </div>
           </div>
         )}
@@ -321,6 +395,42 @@ const Portfolio = () => {
           <p className="mt-2 text-sm">Entwickelt mit React & Tailwind CSS</p>
         </div>
       </footer>
+
+      {/* Google Translate CSS Override */}
+      <style jsx>{`
+        .goog-te-banner-frame,
+        .goog-te-menu-frame {
+          display: none !important;
+        }
+        
+        .goog-te-menu-value {
+          padding: 8px !important;
+          border-radius: 8px !important;
+          background-color: #374151 !important;
+          color: white !important;
+        }
+        
+        .goog-te-menu-value:hover {
+          background-color: #4B5563 !important;
+        }
+        
+        body {
+          top: 0px !important;
+        }
+        
+        #google_translate_element .goog-te-combo {
+          background-color: #374151;
+          border: 1px solid #6B7280;
+          color: white;
+          padding: 8px;
+          border-radius: 6px;
+          font-size: 14px;
+        }
+        
+        #google_translate_element .goog-te-combo:hover {
+          background-color: #4B5563;
+        }
+      `}</style>
     </div>
   );
 };
