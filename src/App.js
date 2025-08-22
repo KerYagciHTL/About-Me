@@ -11,13 +11,13 @@ const Portfolio = () => {
     const detectLanguage = () => {
       const browserLang = navigator.language || navigator.userLanguage;
       const langCode = browserLang.split('-')[0];
-      
+
       // Check if browser language is English or from English-speaking countries
       const englishRegions = ['en', 'us', 'gb', 'ca', 'au', 'nz', 'ie', 'za'];
-      const isEnglishRegion = englishRegions.some(code => 
+      const isEnglishRegion = englishRegions.some(code =>
         browserLang.toLowerCase().includes(code)
       );
-      
+
       // Set language based on detection
       if (isEnglishRegion || langCode === 'en') {
         setLanguage('en');
@@ -52,7 +52,7 @@ const Portfolio = () => {
         if (element) {
           const offsetTop = element.offsetTop;
           const offsetHeight = element.offsetHeight;
-          
+
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setActiveSection(section);
             break;
@@ -98,6 +98,9 @@ const Portfolio = () => {
         kcy: {
           description: 'Eine umfassende Buchhaltungsanwendung mit moderner Benutzeroberfläche. Bietet Funktionen für Rechnungsverwaltung, Finanzberichterstattung und Kundenmanagement mit intuitiver Bedienung.'
         },
+        kerlib: {
+          description: 'Kerlib ist eine moderne, leichtgewichtige Win32-Fensterbibliothek für C#-Anwendungen. Sie bietet effizientes Fenster-Management und benutzerdefinierte Grafiken mit minimalem Overhead.'
+        },
         code: 'Code',
         demo: 'Demo'
       },
@@ -136,7 +139,7 @@ const Portfolio = () => {
       },
       about: {
         title: 'About Me',
-        text1: 'Hi! I\'m Kerim, a passionate software developer focusing on C# and modern technologies. As a student at HTL Leonding, I develop efficient, performant, and maintainable applications.',
+        text1: "Hi! I'm Kerim, a passionate software developer focusing on C# and modern technologies. As a student at HTL Leonding, I develop efficient, performant, and maintainable applications.",
         text2: 'My strengths lie in implementing user-friendly desktop applications and reliable backend logic. I love solving complex challenges while writing clean, well-structured code.',
         traits: ['Clean Code', 'Performance', 'Innovation', 'Teamwork']
       },
@@ -144,6 +147,9 @@ const Portfolio = () => {
         title: 'My Projects',
         kcy: {
           description: 'A comprehensive accounting application with modern user interface. Offers features for invoice management, financial reporting, and customer management with intuitive operation.'
+        },
+        kerlib: {
+          description: 'Kerlib is a modern, lightweight Win32 window library for C# applications. It provides efficient window management and custom graphics with minimal overhead.'
         },
         code: 'Code',
         demo: 'Demo'
@@ -160,7 +166,7 @@ const Portfolio = () => {
       },
       contact: {
         title: 'Contact',
-        subtitle: 'Interested in collaboration? Let\'s talk!',
+        subtitle: "Interested in collaboration? Let's talk!",
         email: 'Email',
         github: 'GitHub'
       },
@@ -175,24 +181,31 @@ const Portfolio = () => {
 
   const projects = [
     {
-      title: "KCY Accounting",
+      title: 'KCY Accounting',
       description: t.projects.kcy.description,
-      tech: ["C#", "C++", ".NET"],
-      github: "https://github.com/KerYagciHTL/KCY-Accounting",
-      icon: "💰"
+      tech: ['C#', 'C++', '.NET'],
+      github: 'https://github.com/KerYagciHTL/KCY-Accounting',
+      icon: '💰'
     },
+    {
+      title: 'Kerlib',
+      description: t.projects.kerlib.description,
+      tech: ['C#', 'Win32 API', '.NET'],
+      github: 'https://github.com/KerYagciHTL/Kerlib.git',
+      icon: '🛠️'
+    }
   ];
 
   const skills = [
     {
       icon: <Code className="w-8 h-8" />,
       title: t.skills.programming,
-      items: ["C#", "C++", "C", "Python", "JavaScript"]
+      items: ['C#', 'C++', 'C', 'Python', 'JavaScript']
     },
     {
       icon: <Settings className="w-8 h-8" />,
       title: t.skills.frameworks,
-      items: [".NET 6/7/8", "Visual Studio", "Git", "Docker", "CMake"]
+      items: ['.NET 6/7/8', 'Visual Studio', 'Git', 'Docker', 'CMake']
     },
     {
       icon: <Zap className="w-8 h-8" />,
@@ -202,7 +215,7 @@ const Portfolio = () => {
     {
       icon: <Database className="w-8 h-8" />,
       title: t.skills.databases,
-      items: ["SQL", "SQLite"]
+      items: ['SQL', 'SQLite']
     }
   ];
 
@@ -234,7 +247,7 @@ const Portfolio = () => {
             <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
               Kerimcan Yagci
             </div>
-            
+
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">
               {['about', 'projects', 'skills', 'contact'].map((section) => (
